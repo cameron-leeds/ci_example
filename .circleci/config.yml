@@ -1,11 +1,25 @@
-
 version: 2
-jobs:
+jobs: 
   build:
     working_directory: ~/tmp
     docker:
-      - image: circleci/node:7
-    steps:
-      - checkout
-      - run: npm install
-      - run: npm test
+      -image: circleci/node:7
+    steps: 
+      -checkout
+      -run: npm install
+      
+      -restore_cache:
+        keys:
+          - source-v1-{{ .Branch}}-{{ .Revision}}
+          - source-v1-{{ .Branch}}-
+          - source-v1-
+
+      -run: npm test
+
+      -save_cache:
+          key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+
+        -checkout
